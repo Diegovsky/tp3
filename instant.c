@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "instant.h"
 
 instant now() {
@@ -17,8 +18,14 @@ void print_time_elapsed(instant now, instant then) {
     double system = seconds_since(now.ru.ru_stime, then.ru.ru_stime);
     double clock = seconds_since(now.time, then.time);
 
-    printf("Tempo de usuário: %.8lf\n", user);
-    printf("Tempo de sistema: %.8lf\n", system);
-    printf("Tempo de relógio: %.8lf\n", clock);
+    if(getenv("TP2_MACHINE") == NULL) {
+        printf("Tempo de usuário: %.8lf\n", user);
+        printf("Tempo de sistema: %.8lf\n", system);
+        printf("Tempo de relógio: %.8lf\n", clock);
+    } else {
+        printf("%.8lf\n", user);
+        printf("%.8lf\n", system);
+        printf("%.8lf\n", clock);
+    }
 }
 

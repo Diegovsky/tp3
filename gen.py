@@ -8,6 +8,7 @@ nmin = 1
 nmax = 20
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--file', default=None)
 parser.add_argument('--num', type=int, default=num)
 parser.add_argument('--nmin', type=int, default=nmin)
 parser.add_argument('--nmax', type=int, default=nmax)
@@ -17,9 +18,13 @@ args = parser.parse_args()
 num = args.num
 nmin = args.nmin
 nmax = args.nmax
+file = args.file
 
 os.makedirs("inputs", exist_ok=True)
-file = f'inputs/entrada-{num}.txt'
+if file is None:
+    file = f'entrada-{num}.txt'
+
+file = f'inputs/{file}'
 
 with open(file, 'w') as f:
     rand = [randint(nmin, nmax) for _ in range(0, num)]
