@@ -5,7 +5,7 @@ import os
 
 num = 5
 nmin = 1
-nmax = 20
+nmax = 50
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--file', default=None)

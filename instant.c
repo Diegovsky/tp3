@@ -23,9 +23,9 @@ void print_time_elapsed(instant now, instant then) {
         printf("Tempo de sistema: %.8lf\n", system);
         printf("Tempo de relógio: %.8lf\n", clock);
     } else {
-        printf("%.8lf\n", user);
-        printf("%.8lf\n", system);
-        printf("%.8lf\n", clock);
+        printf("%lf\n", user);
+        printf("%lf\n", system);
+        printf("%lf\n", clock);
     }
 }
 

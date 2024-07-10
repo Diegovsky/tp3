@@ -1,4 +1,4 @@
-CFLAGS :=-g
+CFLAGS :=
 
 tp2: tp2.o instant.o
 
