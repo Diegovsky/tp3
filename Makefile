@@ -1,7 +1,11 @@
 CFLAGS :=
 
-tp2: tp2.o instant.o
+tp3:
+	$(MAKE) -C src
+	cp src/tp3 tp3
 
 clean:
-	rm -f *.o
-	rm -f tp2
+	$(MAKE) -C src clean
+	rm -f tp3
+
+.PHONY: clean tp3

@@ -55,7 +55,7 @@ for strat, times in strategies.items():
 
     # Adding labels and title
     plt.xlabel('Tamanho das Entradas (n)')
-    plt.ylabel('Tempo médio')
+    plt.ylabel('Tempo médio (segundos)')
     plt.title(f'Tempo médio pelo Número de Entradas ({strat})')
     plt.legend()
     plt.grid(True)

@@ -18,16 +18,18 @@ wait
 set -gx TP2_MACHINE 1
 set -g db "times.db"
 
-rm times.db
-
 alias sqlite=sqlite3
 
 sqlite $db "create table if not exists configuration(id string primary key, n int, strat string);"
-sqlite $db "create table if not exists time(config_id int, user int, system int, clock int); --, foreign key(config_id) references time(id));"
+sqlite $db "create table if not exists time(config_id int, user int, system int, clock int);"
 
 function config -a n strat
-    sqlite $db "select id from configuration where (n = $n) and (strat = '$strat')"
-    sqlite $db "insert into configuration values('$n-$strat', $n, '$strat') returning id;"
+    set -l id (sqlite $db "select id from configuration where (n = $n) and (strat = '$strat');")
+    if test -z "$id"
+        sqlite $db "insert into configuration values('$n-$strat', $n, '$strat') returning id;"
+    else
+        echo $id
+    end
 end
 
 
@@ -37,9 +39,13 @@ end
 
 for strat in Dyn Alt
     for x in $(eval echo \$ranges_$strat | string split ' ')
-        echo Starting $strat $x
+        echo Starting $strat n: $x
 
         set -l id (config $x $strat)
+        if test -z "$id"
+            echo 'empty id'
+            exit 1
+        end
 
         for i in (seq $test_n)
             insert $id (./tp2 $strat inputs/entrada-$x.txt)
