@@ -1,4 +1,4 @@
-CFLAGS :=
+CFLAGS :=-g
 
 tp3:
 	$(MAKE) -C src
