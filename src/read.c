@@ -4,11 +4,22 @@
 #include "read.h"
 
 static char* read_string(FILE* file) {
-    char* buf = malloc(MAX_SIZE);
-    fgets(buf, MAX_SIZE, file);
-    
-    // Remove caractere \n do fim.
-    buf[strcspn(buf, "\n")] = '\0';
+    int cap = MAX_SIZE;
+    int size = 0;
+    char* buf = malloc(cap);
+    char c;
+    while( (c = fgetc(file)) != '\n') {
+        // Realocar buffer para caber mais
+        if(size == cap) {
+            cap *= 2;
+            buf = realloc(buf, cap);
+        }
+        // Copia caractere para o buffer
+        buf[size++] = c;
+    }
+
+    // Finaliza o buffer
+    buf[size] = '\0';
     return buf;
 }
 

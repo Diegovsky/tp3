@@ -9,7 +9,7 @@ cursor = conn.cursor()
 
 # Query to get data from the tables
 query = """
-SELECT configuration.n, time.user, time.system, time.clock, configuration.strat
+SELECT configuration.haystack_length, configuration.needle_length, time.user, time.system, time.clock, configuration.strat
 FROM time
 JOIN configuration ON time.config_id = configuration.id
 """
@@ -23,43 +23,39 @@ conn.close()
 # Process data
 strategies = {}
 for row in data:
-    n, user, system, clock, strat = row
+    haystack_length, needle_length, user, system, clock, strat = row
     if strat not in strategies:
-        strategies[strat] = {'n': [], 'user': [], 'system': [], 'clock': []}
-    strategies[strat]['n'].append(n)
+        strategies[strat] = {'haystack_length': [], 'user': [], 'system': [], 'clock': []}
+    strategies[strat]['haystack_length'].append(haystack_length)
     strategies[strat]['user'].append(user)
     strategies[strat]['system'].append(system)
     strategies[strat]['clock'].append(clock)
 
-# Function to aggregate data by 'n' and calculate averages
-def aggregate_data(n_list, time_list):
-    n_dict = {}
-    for n, time in zip(n_list, time_list):
-        if n not in n_dict:
-            n_dict[n] = []
-        n_dict[n].append(time)
-    n_values = sorted(n_dict.keys())
-    avg_times = [np.mean(n_dict[n]) for n in n_values]
-    return n_values, avg_times
+# Function to aggregate data by 'haystack_length' and calculate averages
+def aggregate_data(haystack_length_list, time_list):
+    haystack_length_dict = {}
+    for n, time in zip(haystack_length_list, time_list):
+        if n not in haystack_length_dict:
+            haystack_length_dict[n] = []
+        haystack_length_dict[n].append(time)
+    haystack_values = sorted(haystack_length_dict.keys())
+    avg_times = [np.mean(haystack_length_dict[n]) for n in haystack_values]
+    return haystack_values, avg_times
 
 # Plot data for each strategy
 for strat, times in strategies.items():
-    n_values, user_avg = aggregate_data(times['n'], times['user'])
-    _, system_avg = aggregate_data(times['n'], times['system'])
-    _, clock_avg = aggregate_data(times['n'], times['clock'])
+    n_values, clock_avg = aggregate_data(times['haystack_length'], times['clock'])
 
     plt.figure(figsize=(10, 6))
-    plt.plot(n_values, user_avg, label='Tempo de Usuário', marker='o')
-    plt.plot(n_values, system_avg, label='Tempo de Sistema', marker='o')
-    plt.plot(n_values, clock_avg, label='Tempo de Relógio', marker='o')
+    plt.plot(n_values, clock_avg, label=f'Tempo de médio da estratégia {strat}', marker='o')
 
-    # Adding labels and title
-    plt.xlabel('Tamanho das Entradas (n)')
-    plt.ylabel('Tempo médio (segundos)')
-    plt.title(f'Tempo médio pelo Número de Entradas ({strat})')
-    plt.legend()
-    plt.grid(True)
+# Adding labels and title
+plt.xlabel('Tamanho das Entradas (n)')
+plt.ylabel('Tempo médio (segundos)')
+plt.title(f'Tempo médio pelo Número de Entradas')
+plt.legend()
+plt.grid(True)
 
-    # Show plot
-    plt.savefig(f'img/{strat}.svg')
+# Show plot
+plt.savefig(f'img/tp3.svg')
 

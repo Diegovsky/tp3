@@ -1,5 +1,4 @@
 #include "brute.h"
-#include <stdio.h>
 #include <string.h>
 
 bool brute_strstr(char* haystack, char* needle) {

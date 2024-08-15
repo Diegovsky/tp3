@@ -12,20 +12,23 @@ int main(int argc, char** argv) {
         puts("Faltam argumentos");
         return 1;
     }
-    char* stat = argv[1];
-    bool is_alt = false;
+    bool is_bmh = false;
     int size = 0;
 
-    switch (stat[0]) {
-        case 'D':
-        case 'A':
-            is_alt = stat[0] == 'A';
+    char strat = argv[1][0];
+
+    switch (strat) {
+        case 'N':
+        case 'B':
+            is_bmh = strat == 'B';
             break;
         default:
             puts("Valor inválido de estratégia");
             return 1;
     }
     problem_input_t* input = read_file(argv[2], &size);
+
+    FILE* output = fopen("saida.txt", "w");
 
     instant before = now();
     for (int i = 0; i < input->queries_len; i++) {
@@ -35,26 +38,25 @@ int main(int argc, char** argv) {
         // Demarca o fim da busca
         copy[q->b] = '\0';
 
+        // Slice representa o texto que será buscado
         char* slice = copy + q->a-1;
 
         bool result;
-        if (is_alt)
+        if (is_bmh)
             result = bmh_strstr(slice, input->needle);
         else
             result = brute_strstr(slice, input->needle);
 
-        bool expected = strstr(slice, input->needle) != NULL;
+        // bool expected = strstr(slice, input->needle) != NULL;
 
         if(result) {
-            puts("sim");
+            fputs("sim", output);
         } else {
-
-            puts("não");
+            fputs("não", output);
         }
 
-        if (result != expected)
-            puts("\e[31mDiferença\e[0m\n");
-
+        /* if (result != expected && 0)
+            puts("\e[31mDiferença\e[0m\n"); */
 
         free(copy);
     }
@@ -63,7 +65,7 @@ int main(int argc, char** argv) {
 
     print_time_elapsed(after, before);
 
-
+    fclose(output);
     input_free(input);
     return 0;
 }
