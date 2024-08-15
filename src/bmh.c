@@ -31,17 +31,20 @@ static char* preprocess(char* needle) {
 }
 
 bool bmh_strstr(char* haystack, char* needle) {
+    // Inicializa a tabela de preprocessamento
     char* table = preprocess(needle);
     int skip = 0;
     int haystack_len = strlen(haystack);
     int needle_len = strlen(needle);
     while (haystack_len - skip >= strlen(needle)) {
+        // Testa se a substring é igual ao segmento atual de haystack
         if (streq(&haystack[skip], needle, needle_len)) {
             free(table);
-            return skip;
+            return true;
         }
+        // Desloca a busca para frente
         skip += table[haystack[skip + needle_len - 1]];
     }
     free(table);
-    return -1;
+    return false;
 }

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include "instant.h"
 #include "bmh.h"
 #include "brute.h"
@@ -49,16 +50,16 @@ int main(int argc, char** argv) {
         else
             result = brute_strstr(slice, input->needle);
 
-        // bool expected = strstr(slice, input->needle) != NULL;
-
         if(result) {
             fputs("sim", output);
         } else {
             fputs("não", output);
         }
 
-        /* if (result != expected && 0)
-            puts("\e[31mDiferença\e[0m\n"); */
+        bool expected = strstr(slice, input->needle) != NULL;
+
+        if (result != expected && 0)
+            puts("\e[31mDiferença\e[0m\n");
 
         // Desfaz final da string
         slice[q->b] = old_char;

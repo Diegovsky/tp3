@@ -18,7 +18,7 @@ if test "$argv[1]" != 'k'
     rm -r inputs
 
     function gen -a h
-        ./gen.py --haystack-len $h --needle-len $needle_len
+        ./gen.py $(GEN_FLAGS) --haystack-len $h --needle-len $needle_len
     end
 
     for x in $ranges_BMH
