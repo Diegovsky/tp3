@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from math import floor
-from random import randint
+from random import choices, randint
 import argparse
 import os
 
@@ -24,45 +24,40 @@ if file is None:
 
 file = f'inputs/{file}'
 
+import string
+
+def random_text(len: int) -> str:
+    return ''.join(choices(string.ascii_letters, k=len))
+
+worst_case = args.worst_case
 
 with open(file, 'w') as f:
-    needle = 'y'*needle_len
-    if args.worst_case:
-        if haystack_len == needle_len:
-            raise ValueError("Haystack length needs to be greater than needle len")
-        n = needle[:-1] + 'x'
-        n_len = len(n)
-        cutoff = haystack_len-needle_len-1
-        count = 0
-        for _ in range(haystack_len//needle_len):
-            d = (count + n_len) - cutoff
-            if d >= 0:
-                f.write(n[:d])
-                break
-
-            count += f.write(n)
-
-        haystack = ''.join(['|', needle, '\n'])
-        f.write(haystack)
-
+    if worst_case:
+        needle = 'x'*(needle_len-1)+'y'
     else:
-        chunk_size = 4096
+        needle = random_text(needle_len)
 
-        total = haystack_len-needle_len
-        chunk_count = floor(total/chunk_size)
-        scrap = total%chunk_size
+    # haystack
+    chunk_size = 4096
 
-        for _ in range(chunk_count):
-            f.write('x'*chunk_size)
+    total = haystack_len-needle_len
+    chunk_count = floor(total/chunk_size)
+    scrap = total%chunk_size
 
-        f.write('x'*scrap)
-        f.write(needle)
-        f.write('\n')
+    for chunk_length in list(range(chunk_count))+[scrap]:
+        if worst_case:
+            f.write('y'*chunk_length)
+        else:
+            f.write(random_text(chunk_length))
+
+    f.write(needle)
+    f.write('\n')
+    #end haystack
 
     f.write(f"{needle}\n")
     f.write(f"{qsize}\n")
     f.write(f"1 {haystack_len}\n")
-    for _ in range(qsize):
+    for _ in range(qsize-1):
         end = randint(0, haystack_len)
         start = randint(0, end)
         f.write(f"{start} {end}\n")
