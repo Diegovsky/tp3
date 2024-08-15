@@ -29,6 +29,10 @@ int main(int argc, char** argv) {
 
     FILE* output = fopen("saida.txt", "w");
 
+    puts(input->haystack);
+    puts(input->needle);
+    puts("");
+
     instant before = now();
     for (int i = 0; i < input->queries_len; i++) {
         query_t* q = &input->queries[i];
@@ -39,10 +43,12 @@ int main(int argc, char** argv) {
         // Salvamos o caractere no fim da busca
         char old_char = slice[q->b];
         // Demarca o fim da busca
-        slice[q->b] = '\0';
+        input->haystack[q->b] = '\0';
 
         // Ajusta para começar em `a`
         slice = slice + q->a-1;
+
+        puts(slice);
 
         bool result;
         if (is_bmh)
@@ -51,18 +57,18 @@ int main(int argc, char** argv) {
             result = brute_strstr(slice, input->needle);
 
         if(result) {
-            fputs("sim", output);
+            fputs("sim\n", output);
         } else {
-            fputs("não", output);
+            fputs("não\n", output);
         }
 
         bool expected = strstr(slice, input->needle) != NULL;
 
-        if (result != expected && 0)
-            puts("\e[31mDiferença\e[0m\n");
+        if (result != expected)
+            printf("\e[31mDiferença:\e[0m %b\n", result);
 
         // Desfaz final da string
-        slice[q->b] = old_char;
+        input->haystack[q->b] = old_char;
     }
 
     instant after = now();

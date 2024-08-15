@@ -1,13 +1,14 @@
+#!/usr/bin/env fish
+
 for strat in BMH Naive
-    for f in (ls inputs)
-        echo "[$strat] :: "
-        if ./tp3 $strat | rg -i 'Diferença'
-            echo -e "\e[31mFalha"
+    for f in (ls inputs) entrada.txt
+        echo -en "[$strat] :: "
+        if ./tp3 $strat $f | rg -i 'Diferença' > /dev/null
+            echo -en "\e[31mFalha"
         else
-            echo -e "\e[32mSucesso"
+            echo -en "\e[32mSucesso"
         end
 
-            echo -e "\e[0mSucesso"
-
+        echo -e " \e[0m:: $f"
     end
 end
