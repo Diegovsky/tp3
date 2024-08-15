@@ -2,7 +2,7 @@
 
 # set -l ranges_BMH (seq 10000 2000 100000)
 # set -l ranges_Naive (seq 40)
-set -l scale 1000
+set -l scale 10
 set -g ranges_BMH (seq $scale (math 10 x $scale) (math 500 x $scale))
 set -g ranges_Naive $ranges_BMH
 set -g needle_len 5
@@ -18,7 +18,7 @@ if test "$argv[1]" != 'k'
     rm -r inputs
 
     function gen -a h
-        ./gen.py --haystack-len $h --needle-len $needle_len
+        ./gen.py -w --haystack-len $h --needle-len $needle_len
     end
 
     for x in $ranges_BMH

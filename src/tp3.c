@@ -1,6 +1,4 @@
-#include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 #include "instant.h"
 #include "bmh.h"
@@ -32,14 +30,18 @@ int main(int argc, char** argv) {
 
     instant before = now();
     for (int i = 0; i < input->queries_len; i++) {
-        // Cria um intervalo de busca a partir do texto original.
-        char* copy = strdup(input->haystack);
         query_t* q = &input->queries[i];
-        // Demarca o fim da busca
-        copy[q->b] = '\0';
 
         // Slice representa o texto que será buscado
-        char* slice = copy + q->a-1;
+        char* slice = input->haystack;
+
+        // Salvamos o caractere no fim da busca
+        char old_char = slice[q->b];
+        // Demarca o fim da busca
+        slice[q->b] = '\0';
+
+        // Ajusta para começar em `a`
+        slice = slice + q->a-1;
 
         bool result;
         if (is_bmh)
@@ -58,7 +60,8 @@ int main(int argc, char** argv) {
         /* if (result != expected && 0)
             puts("\e[31mDiferença\e[0m\n"); */
 
-        free(copy);
+        // Desfaz final da string
+        slice[q->b] = old_char;
     }
 
     instant after = now();

@@ -42,11 +42,14 @@ def aggregate_data(haystack_length_list, time_list):
     avg_times = [np.mean(haystack_length_dict[n]) for n in haystack_values]
     return haystack_values, avg_times
 
+plt.figure(figsize=(10, 6))
+
 # Plot data for each strategy
 for strat, times in strategies.items():
     n_values, clock_avg = aggregate_data(times['haystack_length'], times['clock'])
 
-    plt.figure(figsize=(10, 6))
+    print(strat)
+
     plt.plot(n_values, clock_avg, label=f'Tempo de médio da estratégia {strat}', marker='o')
 
 # Adding labels and title
