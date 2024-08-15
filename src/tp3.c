@@ -30,19 +30,33 @@ int main(int argc, char** argv) {
     instant before = now();
     for (int i = 0; i < input->queries_len; i++) {
         // Cria um intervalo de busca a partir do texto original.
-        char* slice = strdup(input->haystack);
+        char* copy = strdup(input->haystack);
         query_t* q = &input->queries[i];
         // Demarca o fim da busca
-        slice[q->b] = '\0';
+        copy[q->b] = '\0';
 
-        if(bmh_strstr(slice + q->a-1, input->needle)) {
+        char* slice = copy + q->a-1;
+
+        bool result;
+        if (is_alt)
+            result = bmh_strstr(slice, input->needle);
+        else
+            result = brute_strstr(slice, input->needle);
+
+        bool expected = strstr(slice, input->needle) != NULL;
+
+        if(result) {
             puts("sim");
         } else {
 
             puts("não");
         }
 
-        free(slice);
+        if (result != expected)
+            puts("\e[31mDiferença\e[0m\n");
+
+
+        free(copy);
     }
 
     instant after = now();

@@ -6,6 +6,9 @@
 static char* read_string(FILE* file) {
     char* buf = malloc(MAX_SIZE);
     fgets(buf, MAX_SIZE, file);
+    
+    // Remove caractere \n do fim.
+    buf[strcspn(buf, "\n")] = '\0';
     return buf;
 }
 
