@@ -1,5 +1,3 @@
-CFLAGS := $(CFLAGS)
-
 tp3:
 	$(MAKE) -C src
 	cp src/tp3 tp3

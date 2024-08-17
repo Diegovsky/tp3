@@ -6,7 +6,7 @@ set -l scale 1000
 set -g ranges_BMH (seq $scale (math 10 x $scale) (math 500 x $scale))
 set -g ranges_Naive $ranges_BMH
 set -g needle_len 5
-set -g test_n 20
+set -g test_n 8
 
 set -gx TP_MACHINE 1
 set -g db "times.db"
@@ -18,17 +18,18 @@ if test "$argv[1]" != 'k'
     rm -r inputs
 
     function gen -a h
-        ./gen.py $(GEN_FLAGS) --haystack-len $h --needle-len $needle_len
+        ./gen.py $GEN_FLAGS --haystack-len $h --needle-len $needle_len
     end
 
     for x in $ranges_BMH
         gen $x &
     end
 
-    for x in $ranges_Naive
-        gen $x &
-    end
+    # for x in $ranges_Naive
+    #     gen $x &
+    # end
     wait
+    echo 1
 end
 
 alias sqlite=sqlite3
@@ -61,7 +62,12 @@ for strat in BMH Naive
         end
 
         for i in (seq $test_n)
-            insert $id (./tp3 $strat inputs/entrada-$x.txt)
+            set out $(./tp3 $strat inputs/entrada-$x.txt)
+            if test $status -ne 0
+                echo "Error in $strat $test_n $x $out"
+                exit 1
+            end
+            insert $id $out
         end
     end
 end

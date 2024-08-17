@@ -29,16 +29,18 @@ int main(int argc, char** argv) {
 
     FILE* output = fopen("saida.txt", "w");
 
-    puts(input->haystack);
-    puts(input->needle);
-    puts("");
-
     instant before = now();
+    size_t s = strlen(input->haystack);
     for (int i = 0; i < input->queries_len; i++) {
         query_t* q = &input->queries[i];
 
         // Slice representa o texto que será buscado
         char* slice = input->haystack;
+
+        if (q->b > s || q->a > q->b) {
+            puts("Fora de alcance");
+            return 1;
+        }
 
         // Salvamos o caractere no fim da busca
         char old_char = slice[q->b];
@@ -47,8 +49,6 @@ int main(int argc, char** argv) {
 
         // Ajusta para começar em `a`
         slice = slice + q->a-1;
-
-        puts(slice);
 
         bool result;
         if (is_bmh)
@@ -61,11 +61,6 @@ int main(int argc, char** argv) {
         } else {
             fputs("não\n", output);
         }
-
-        bool expected = strstr(slice, input->needle) != NULL;
-
-        if (result != expected)
-            printf("\e[31mDiferença:\e[0m %b\n", result);
 
         // Desfaz final da string
         input->haystack[q->b] = old_char;

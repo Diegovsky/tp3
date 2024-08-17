@@ -33,7 +33,7 @@ worst_case = args.worst_case
 
 with open(file, 'w') as f:
     if worst_case:
-        needle = 'x'*(needle_len-1)+'y'
+        needle = 'y'*(needle_len-1)+'x'
     else:
         needle = random_text(needle_len)
 
@@ -44,7 +44,7 @@ with open(file, 'w') as f:
     chunk_count = floor(total/chunk_size)
     scrap = total%chunk_size
 
-    for chunk_length in list(range(chunk_count))+[scrap]:
+    for chunk_length in [chunk_size]*chunk_count+[scrap]:
         if worst_case:
             f.write('y'*chunk_length)
         else:
